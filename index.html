@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body.light {
+      --bg: #f5f7fa;
+      --container-bg: rgba(255, 255, 255, 0.8);
+      --text: #222;
+      --button-text: white;
+      --button-shadow: rgba(0,0,0,0.15);
+      --button-hover-shadow: rgba(0,0,0,0.25);
+    }
+
+    body.dark {
+      --bg: linear-gradient(135deg, #1e1e2f, #2c3e50);
+      --container-bg: rgba(255, 255, 255, 0.1);
+      --text: #fff;
+      --button-text: white;
+      --button-shadow: rgba(0,0,0,0.15);
+      --button-hover-shadow: rgba(255,255,255,0.15);
+    }
+
+    .billipage-container {
+      background: var(--container-bg);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .visible { opacity: 1; }
+
+    .pay-buttons, .crypto-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .pay-button {
+      position: relative;
+      color: var(--button-text);
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 10px var(--button-shadow);
+      transition: transform 0.35s, box-shadow 0.35s, filter 0.35s, background-position 0.7s;
+      background-size: 200% 200%, cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      overflow: hidden;
+    }
+
+    .pay-button::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -75%;
+      width: 50%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.25);
+      transform: rotate(25deg);
+      pointer-events: none;
+      opacity: 0;
+      filter: blur(8px);
+    }
+
+    .pay-button:hover::before {
+      opacity: 1;
+      animation: shineMove 1s ease forwards;
+    }
+
+    @keyframes shineMove {
+      0% { transform: translateX(0) rotate(25deg); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(250%) rotate(25deg); opacity: 0; }
+    }
+
+    .pay-button:hover {
+      transform: translateY(-6px) scale(1.06);
+      box-shadow: 0 18px 30px rgba(0,0,0,0.3), 0 0 20px 5px var(--button-hover-shadow);
+      filter: brightness(1.15);
+      background-position: 100% 50%, center center;
+    }
+
+    .bkash { background-image: linear-gradient(45deg, #ff9fce, #e754b4), url('https://i.imgur.com/5XFXE2j.png'); }
+    .nagad { background-image: linear-gradient(45deg, #ffc070, #ff7e1d), url('https://i.imgur.com/YLYQp6v.png'); }
+    .upi { background-image: linear-gradient(45deg, #f0fbf0, #8bc34a), url('https://i.imgur.com/31PZ7V8.png'); color: #1b5e20; }
+    .crypto { background-image: linear-gradient(45deg, #111111, #ffdb4d), url('https://i.imgur.com/gP8ipEZ.png'); color: #222; }
+    .ltc { background-image: linear-gradient(45deg, #c0c0c0, #7d7d7d), url('https://i.imgur.com/RgXQ6Vp.png'); }
+    .btc { background-image: linear-gradient(45deg, #ffd700, #b8860b), url('https://i.imgur.com/0fLja3V.png'); }
+    .usdt { background-image: linear-gradient(45deg, #4caf50, #2e7d32), url('https://i.imgur.com/zs7LzOu.png'); }
+    .eth { background-image: linear-gradient(45deg, #222222, #444444), url('https://i.imgur.com/KZ4EDag.png'); }
+    .back-button { background: #555; color: #eee; }
+
+    .qr-section img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.15);
+      display: block;
+      margin: 0 auto;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 2px solid var(--text);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    #crypto-address-bar {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    #crypto-info-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #payment-address {
+      padding: 10px 15px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: #eee;
+      text-align: center;
+    }
+
+    #crypto-address-bar button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      background: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .loader-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loader-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .pb-loader {
+      font-weight: 900;
+      font-size: 64px;
+      color: #ffd700;
+      letter-spacing: 12px;
+      font-family: 'Poppins', sans-serif;
+      text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+      animation: glowPulse 2.5s ease-in-out infinite, floatUpDown 3s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { color: #ffd700; }
+      50% { color: #fffacd; }
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #4caf50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.25);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      z-index: 2000;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="dark">
+  <button id="theme-toggle">Switch to Light</button>
+
+  <div class="loader-overlay" id="page-loader">
+    <div class="pb-loader">BAZAR PAY</div>
+  </div>
+
+  <div class="billipage-container" id="main-container">
+    <h1>PAYMENT BAZAR</h1>
+
+    <div class="pay-buttons" id="main-buttons">
+      <button class="pay-button bkash" onclick="handleButtonClick('bkash', 'bKash')">Pay with bKash</button>
+      <button class="pay-button nagad" onclick="handleButtonClick('nagad', 'Nagad')">Pay with Nagad</button>
+      <button class="pay-button upi" onclick="handleButtonClick('upi', 'UPI')">Pay with UPI</button>
+      <button class="pay-button crypto" onclick="showCryptoSubmenu()">Pay with Crypto</button>
+    </div>
+
+    <div class="crypto-submenu" id="crypto-submenu" style="display:none;">
+      <button class="pay-button ltc" onclick="handleButtonClick('ltc', 'LTC')">LTC</button>
+      <button class="pay-button btc" onclick="handleButtonClick('btc', 'BTC')">BTC</button>
+      <button class="pay-button usdt" onclick="handleButtonClick('usdt', 'USDT')">USDT</button>
+      <button class="pay-button eth" onclick="handleButtonClick('eth', 'ETH')">ETH</button>
+      <button class="pay-button back-button" onclick="backToMain()">← Back</button>
+    </div>
+
+    <div class="qr-section" id="qr-section" style="display:none;">
+      <img id="qr-image" src="" alt="Payment QR" />
+    </div>
+
+    <div class="qr-section" id="crypto-address-bar">
+      <div id="crypto-info-box">
+        <strong id="network-name"></strong>
+        <input id="payment-address" type="text" readonly />
+      </div>
+      <button onclick="copyAddress()">Copy</button>
+    </div>
+
+    <div class="footer">&copy; 2025 Payment Bazar. All rights reserved.</div>
+  </div>
+
+  <div id="toast">✅ Message</div>
+
+  <script>
+    const loader = document.getElementById('page-loader');
+    const mainContainer = document.getElementById('main-container');
+    const mainButtons = document.getElementById('main-buttons');
+    const cryptoSubmenu = document.getElementById('crypto-submenu');
+    const qrSection = document.getElementById('qr-section');
+    const qrImage = document.getElementById('qr-image');
+    const cryptoAddressBar = document.getElementById('crypto-address-bar');
+    const paymentAddress = document.getElementById('payment-address');
+    const networkName = document.getElementById('network-name');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const toast = document.getElementById('toast');
+    const body = document.body;
+
+    const qrSources = {
+      bkash: 'https://shorturl.at/Uustd',
+      nagad: '01814529392',
+      upi: 'https://shorturl.at/aiRHR'
+    };
+
+    const cryptoAddresses = {
+      ltc: { address: 'ltc1qx4z4slw0w8uzqz2htue4gm856ppyvwuzr2s9mf', network: 'Litecoin Network' },
+      btc: { address: 'bc1q2kk6a9ratajvwlvsteq0annxemtexrxh0230f9', network: 'Bitcoin Network' },
+      usdt: { address: 'TXYZQ1iVEXAMPLEUSDTonTRC20', network: 'TRC20 Network' },
+      eth: { address: '0xbc808611DFD9D133A38BeA91E394c3C87b9381e3', network: 'Ethereum Network' }
+    };
+
+    window.onload = () => {
+      setTimeout(() => {
+        loader.classList.add('hidden');
+        mainContainer.classList.add('visible');
+      }, 2000);
+    };
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function handleButtonClick(type, label) {
+      showToast(`✅ ${label} selected`);
+      if (cryptoAddresses[type]) {
+        cryptoAddressBar.style.display = 'flex';
+        qrSection.style.display = 'none';
+        paymentAddress.value = cryptoAddresses[type].address;
+        networkName.textContent = `Network: ${cryptoAddresses[type].network}`;
+      } else {
+        cryptoAddressBar.style.display = 'none';
+        qrSection.style.display = 'block';
+        qrImage.src = qrSources[type] || '';
+      }
+    }
+
+    function copyAddress() {
+      navigator.clipboard.writeText(paymentAddress.value).then(() => {
+        showToast("✅ Address copied!");
+      });
+    }
+
+    function showCryptoSubmenu() {
+      mainButtons.style.display = 'none';
+      cryptoSubmenu.style.display = 'flex';
+      qrSection.style.display = 'none';
+      cryptoAddressBar.style.display = 'none';
+    }
+
+    function backToMain() {
+      cryptoSubmenu.style.display = 'none';
+      mainButtons.style.display = 'flex';
+      qrSection.style.display = 'none';
+      cryptoAddressBar.style.display = 'none';
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (body.classList.contains('dark')) {
+        body.classList.replace('dark', 'light');
+        themeToggleBtn.textContent = 'Switch to Dark';
+      } else {
+        body.classList.replace('light', 'dark');
+        themeToggleBtn.textContent = 'Switch to Light';
+      }
+    });
+  </script>
+</body>
+</html>
