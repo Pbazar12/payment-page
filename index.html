@@ -643,6 +643,227 @@
       <div class="toggle-knob"></div>
     </button>
   </div>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== BUTTON ===== */
+  #tc-button {
+    position: fixed;
+    bottom: 6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #2563eb;
+    border-radius: 32px;
+    padding: 16px 44px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.05em;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    transition: all 0.35s ease;
+    opacity: 0;
+    animation: buttonSlideFade 0.8s ease-out forwards;
+    z-index: 10000;
+  }
+
+  @keyframes buttonSlideFade {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, 40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  #tc-button:hover {
+    background: linear-gradient(to right, #2563eb, #1e40af);
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 10px 30px rgba(30, 64, 175, 0.6);
+  }
+
+  #tc-button:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  /* ===== MODAL BACKDROP ===== */
+  #tc-modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  #tc-modal-bg.show {
+    display: block;
+    opacity: 1;
+  }
+
+  /* ===== MODAL BOX ===== */
+  #tc-modal {
+    background: #fff;
+    width: 540px;
+    max-width: 95vw;
+    max-height: 80vh;
+    margin: 10vh auto;
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.45s ease;
+  }
+
+  #tc-modal-bg.show #tc-modal {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ===== MODAL HEADER ===== */
+  #tc-modal h2 {
+    margin: 0;
+    padding: 24px 36px;
+    background: linear-gradient(to right, #2563eb, #1e40af);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* ===== CLOSE BUTTON ===== */
+  #tc-close {
+    position: absolute;
+    top: 18px;
+    right: 26px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffffcc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  #tc-close:hover {
+    color: #ff5252;
+  }
+
+  /* ===== CONTENT ===== */
+  #tc-modal p {
+    padding: 24px 36px;
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.7;
+    overflow-y: auto;
+    flex: 1;
+    scroll-behavior: smooth;
+  }
+
+  #tc-modal p strong {
+    color: #2563eb;
+  }
+
+  /* Scrollbar style only inside modal */
+  #tc-modal p::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #tc-modal p::-webkit-scrollbar-thumb {
+    background-color: #2563eb;
+    border-radius: 6px;
+  }
+
+  #tc-modal p::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    #tc-modal {
+      width: 92vw;
+      margin: 12vh auto;
+      border-radius: 16px;
+    }
+
+    #tc-modal h2 {
+      font-size: 1.3rem;
+      padding: 20px;
+    }
+
+    #tc-modal p {
+      padding: 20px;
+    }
+
+    #tc-close {
+      top: 16px;
+      right: 18px;
+    }
+  }
+</style>
+
+<!-- Button -->
+<button id="tc-button">Terms & Conditions</button>
+
+<!-- Modal -->
+<div id="tc-modal-bg" role="dialog" aria-modal="true" aria-labelledby="tc-title">
+  <div id="tc-modal">
+    <h2 id="tc-title">Terms & Conditions</h2>
+    <span id="tc-close" role="button" aria-label="Close">&times;</span>
+    <p>
+      Welcome to our <strong>Money Exchange Platform</strong>. By using our services, you agree to the following:<br><br>
+      <strong>1. Compliance:</strong> All transactions must comply with applicable laws.<br><br>
+      <strong>2. Rates:</strong> Exchange rates may change without notice due to market fluctuations.<br><br>
+      <strong>3. Processing:</strong> Delays can occur due to banks or verification steps. We are not liable for third-party delays.<br><br>
+      <strong>4. User Info:</strong> Please ensure your details are accurate. Inaccuracies may result in failed transactions.<br><br>
+      <strong>5. Privacy:</strong> Your data is handled securely and in accordance with our privacy policy.<br><br>
+      <strong>6. Non-Refundable:</strong> All confirmed transactions are <strong>final and non-refundable</strong>.<br><br>
+      <strong>7. Limitations:</strong> We are not liable for indirect losses or delays beyond our control.<br><br>
+      <strong>8. Updates:</strong> Terms may change. Continued use means you agree to the latest version.<br><br>
+      Please contact support for any questions before initiating a transaction.
+    </p>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  const button = document.getElementById('tc-button');
+  const modalBg = document.getElementById('tc-modal-bg');
+  const closeBtn = document.getElementById('tc-close');
+
+  button.addEventListener('click', () => {
+    modalBg.classList.add('show');
+    button.style.display = 'none';
+  });
+
+  function closeModal() {
+    modalBg.classList.remove('show');
+    button.style.display = 'inline-block'; // Show instantly after close
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+
+  modalBg.addEventListener('click', e => {
+    if (e.target === modalBg) closeModal();
+  });
+
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalBg.classList.contains('show')) {
+      closeModal();
+    }
+  });
+</script>
+
 
   <main id="main-container" class="billipage-container" role="main" aria-live="polite" aria-atomic="true" aria-relevant="additions removals">
     <h1 id="main-title" aria-hidden="true">PAYMENT BAZAR</h1>
@@ -706,15 +927,16 @@
 
     const qrSources = {
       bkash: 'https://shorturl.at/Uustd',
-      nagad: '',
+      nagad: 'https://shorturl.at/A7f60',
       upi: 'https://shorturl.at/aiRHR'
     };
+    
 
     const cryptoAddresses = {
-      ltc: { address: 'ltc1qx4z4slw0w8uzqz2htue4gm856ppyvwuzr2s9mf', network: 'Litecoin Network' },
-      btc: { address: 'bc1q2kk6a9ratajvwlvsteq0annxemtexrxh0230f9', network: 'Bitcoin Network' },
-      usdt: { address: 'TXYZQ1iVEXAMPLEUSDTonTRC20', network: 'TRC20 Network' },
-      eth: { address: '0xbc808611DFD9D133A38BeA91E394c3C87b9381e3', network: 'Ethereum Network' }
+      ltc: { address: 'LXsPTGyC5HG76mY5vNRVMf4ZuPEU1LRksn', network: 'Litecoin Network' },
+      btc: { address: '1M6Vu1M6Vu7AbhkBQdKXigyEEsbPgutqfYhdspM', network: 'Bitcoin Network' },
+      usdt: { address: 'TX39qxAAa5TXjKDJQ2eStZ74qisHKDjKUC', network: 'TRC20 Network' },
+      eth: { address: '0x3d88b6ea1f5717bed5908dfaee198a6ddfc1fce8', network: 'Ethereum Network' }
     };
 
     window.addEventListener('load', () => {
