@@ -7,9 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
-      transition: background-color 0.5s ease, color 0.5s ease;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      user-select: none;
     }
 
     body {
@@ -17,292 +20,693 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
+      justify-content: flex-start;
+      padding: 0;
       overflow-x: hidden;
       background: var(--bg);
       color: var(--text);
+      padding-top: 80px; /* space for fixed top panel */
+      position: relative;
+      font-smooth: antialiased;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    body.light {
-      --bg: #f5f7fa;
-      --container-bg: rgba(255, 255, 255, 0.8);
-      --text: #222;
-      --button-text: white;
-      --button-shadow: rgba(0,0,0,0.15);
-      --button-hover-shadow: rgba(0,0,0,0.25);
-    }
-
+    /* THEMES */
     body.dark {
-      --bg: linear-gradient(135deg, #1e1e2f, #2c3e50);
-      --container-bg: rgba(255, 255, 255, 0.1);
-      --text: #fff;
-      --button-text: white;
-      --button-shadow: rgba(0,0,0,0.15);
-      --button-hover-shadow: rgba(255,255,255,0.15);
+      --bg: linear-gradient(to bottom right, #1a1a2e, #16213e);
+      --container-bg: rgba(255, 255, 255, 0.08);
+      --text: #f2f2f2;
+      --button-shadow: rgba(0, 0, 0, 0.3);
+      --button-hover-shadow: rgba(255, 255, 255, 0.5);
+      --btn-bkash-start: #ff2a6d;
+      --btn-bkash-end: #c8003a;
+      --btn-nagad-start: #ff7a00;
+      --btn-nagad-end: #d43c00;
+      --btn-upi-start: #4caf50;
+      --btn-upi-end: #357a2b;
+      --btn-crypto-start: #00aaff;
+      --btn-crypto-end: #005f99;
+      --btn-crypto-text: #e0f7ff;
+      --btn-back-bg: #222;
+      --btn-back-hover-bg: #333;
+      --footer-bg: transparent;
     }
 
+    body.superdark {
+      --bg: #0a0a0a;
+      --container-bg: rgba(255, 255, 255, 0.05);
+      --text: #cccccc;
+      --button-shadow: rgba(0, 0, 0, 0.5);
+      --button-hover-shadow: rgba(255, 255, 255, 0.7);
+      --btn-bkash-start: #e60056;
+      --btn-bkash-end: #99002f;
+      --btn-nagad-start: #f44336;
+      --btn-nagad-end: #9b1b11;
+      --btn-upi-start: #388e3c;
+      --btn-upi-end: #1b5e20;
+      --btn-crypto-start: #006bb3;
+      --btn-crypto-end: #004a73;
+      --btn-crypto-text: #a0d8ff;
+      --btn-back-bg: #111;
+      --btn-back-hover-bg: #222;
+      --footer-bg: rgba(255,255,255,0.05);
+    }
+
+    /* TOP PANEL: announcement + toggle switch */
+    .top-panel {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background: linear-gradient(270deg, #ff6a00, #ffb347, #ff6a00);
+      background-size: 600% 600%;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px;
+      z-index: 1001;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      overflow: hidden;
+      border-radius: 0 0 15px 15px;
+      animation: barGlow 10s ease infinite;
+      user-select: none;
+    }
+
+    .announcement-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-right: 20px;
+      position: relative;
+    }
+
+    .announcement-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 15s linear infinite;
+    }
+
+    /* THEME TOGGLE */
+    #theme-toggle {
+      position: relative;
+      width: 60px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow:
+        inset 0 0 5px rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      padding: 3px;
+      transition: background-color 0.4s ease;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    #theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* THE KNOB */
+    #theme-toggle .toggle-knob {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      box-shadow:
+        0 3px 8px rgba(0,0,0,0.3),
+        inset 0 -2px 5px rgba(255,255,255,0.8);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(3px);
+      will-change: transform;
+    }
+
+    body.superdark #theme-toggle .toggle-knob {
+      transform: translateX(33px);
+      box-shadow:
+        0 5px 12px rgba(255,255,255,0.6),
+        inset 0 -3px 6px rgba(255,255,255,0.95);
+    }
+
+    /* TOOLTIP */
+    #theme-toggle::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75);
+      color: white;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 10;
+    }
+
+    #theme-toggle:hover::after {
+      opacity: 1;
+    }
+
+    /* MAIN CONTAINER */
     .billipage-container {
       background: var(--container-bg);
       border-radius: 20px;
-      backdrop-filter: blur(20px);
       padding: 30px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      margin-top: 30px;
       width: 100%;
       max-width: 500px;
       text-align: center;
+      backdrop-filter: blur(30px);
+      box-shadow: 0 0 30px rgba(0,0,0,0.55);
       opacity: 0;
       transition: opacity 0.6s ease;
+      min-height: 400px;
+      position: relative;
+      user-select: none;
     }
 
     .visible { opacity: 1; }
 
-    .pay-buttons, .crypto-submenu {
+    /* Redesigned animated 3D PAYMENT BAZAR title with neon pulse */
+    h1#main-title {
+      font-size: 48px;
+      margin-bottom: 40px;
+      background: linear-gradient(45deg, #ff0057, #ff9a00, #00e0ff, #ff0057);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: neonPulse 3s ease-in-out infinite alternate;
+      text-shadow:
+        0 0 10px #ff0000,
+        0 0 1px #cff801,
+        0 0 0px #ed004f,
+        0 0 0px #d5036c,
+        0 0 0px #ffffff;
+      user-select: none;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Hide main title when payment page active */
+    #payment-page.visible + #main-container h1#main-title,
+    #payment-page.visible ~ #main-container h1#main-title {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .pay-buttons {
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      margin-bottom: 20px;
+      gap: 20px;
+      user-select: none;
     }
 
+    /* 3D Deep Buttons */
     .pay-button {
       position: relative;
-      color: var(--button-text);
-      padding: 15px;
-      border: none;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 700;
+      padding: 18px 28px;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 10px var(--button-shadow);
-      transition: transform 0.35s, box-shadow 0.35s, filter 0.35s, background-position 0.7s;
-      background-size: 200% 200%, cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      overflow: hidden;
-    }
-
-    .pay-button::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -75%;
-      width: 50%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.25);
-      transform: rotate(25deg);
-      pointer-events: none;
-      opacity: 0;
-      filter: blur(8px);
-    }
-
-    .pay-button:hover::before {
-      opacity: 1;
-      animation: shineMove 1s ease forwards;
-    }
-
-    @keyframes shineMove {
-      0% { transform: translateX(0) rotate(25deg); opacity: 0; }
-      50% { opacity: 0.8; }
-      100% { transform: translateX(250%) rotate(25deg); opacity: 0; }
+      background-size: 300% 300%;
+      color: #fff;
+      border: none;
+      box-shadow:
+        inset 0 6px 10px rgba(255,255,255,0.35),
+        0 10px 30px var(--button-shadow),
+        0 6px 15px rgba(0,0,0,0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      filter: saturate(1.3);
     }
 
     .pay-button:hover {
-      transform: translateY(-6px) scale(1.06);
-      box-shadow: 0 18px 30px rgba(0,0,0,0.3), 0 0 20px 5px var(--button-hover-shadow);
-      filter: brightness(1.15);
-      background-position: 100% 50%, center center;
+      transform: scale(1.07) translateY(-3px);
+      box-shadow:
+        0 20px 40px var(--button-hover-shadow),
+        0 8px 20px rgba(0,0,0,0.7),
+        inset 0 8px 15px rgba(255,255,255,0.7);
+      filter: saturate(1.5) brightness(1.15);
     }
 
-    .bkash { background-image: linear-gradient(45deg, #ff9fce, #e754b4), url('https://i.imgur.com/5XFXE2j.png'); }
-    .nagad { background-image: linear-gradient(45deg, #ffc070, #ff7e1d), url('https://i.imgur.com/YLYQp6v.png'); }
-    .upi { background-image: linear-gradient(45deg, #f0fbf0, #8bc34a), url('https://i.imgur.com/31PZ7V8.png'); color: #1b5e20; }
-    .crypto { background-image: linear-gradient(45deg, #111111, #ffdb4d), url('https://i.imgur.com/gP8ipEZ.png'); color: #222; }
-    .ltc { background-image: linear-gradient(45deg, #c0c0c0, #7d7d7d), url('https://i.imgur.com/RgXQ6Vp.png'); }
-    .btc { background-image: linear-gradient(45deg, #ffd700, #b8860b), url('https://i.imgur.com/0fLja3V.png'); }
-    .usdt { background-image: linear-gradient(45deg, #4caf50, #2e7d32), url('https://i.imgur.com/zs7LzOu.png'); }
-    .eth { background-image: linear-gradient(45deg, #222222, #444444), url('https://i.imgur.com/KZ4EDag.png'); }
-    .back-button { background: #555; color: #eee; }
-
-    .qr-section img {
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(255,255,255,0.15);
-      display: block;
-      margin: 0 auto;
+    /* Button colors */
+    .bkash {
+      background: linear-gradient(145deg, var(--btn-bkash-start), var(--btn-bkash-end));
     }
 
-    #theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: transparent;
-      border: 2px solid var(--text);
-      color: var(--text);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
+    .nagad {
+      background: linear-gradient(145deg, var(--btn-nagad-start), var(--btn-nagad-end));
+    }
+
+    .upi {
+      background: linear-gradient(145deg, var(--btn-upi-start), var(--btn-upi-end));
+      color: #d7f7d7;
+      text-shadow: 0 0 4px #2c5f23;
+    }
+
+    /* Updated "Pay with Crypto" sharper blue */
+    .crypto {
+      background: linear-gradient(145deg, var(--btn-crypto-start), var(--btn-crypto-end));
+      color: var(--btn-crypto-text);
+      box-shadow:
+        inset 0 5px 12px #0099ff,
+        0 10px 30px #005f99;
+      text-shadow: 0 0 8px #80d4ff;
+    }
+
+    /* Crypto submenu with spacing */
+    .crypto-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 25px; /* increased spacing */
+      user-select: none;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    /* Redesigned Crypto Buttons with distinct sharper 3D colors */
+    .crypto-submenu .ltc {
+      background: linear-gradient(145deg, #d4d4d4, #8a8a8a);
+      color: #fafafa;
+      box-shadow:
+        inset 0 6px 14px #eaeaea,
+        0 10px 38px #777777;
+      text-shadow: 0 0 7px #ececec;
+      width: 180px;
+    }
+
+    .crypto-submenu .ltc:hover {
+      background: linear-gradient(145deg, #e6e6e6, #9f9f9f);
+      box-shadow:
+        0 22px 48px #cccccc,
+        inset 0 8px 20px #fff;
+      color: #ffffff;
+      text-shadow: 0 0 12px #fff;
+    }
+
+    .crypto-submenu .btc {
+      background: linear-gradient(145deg, #f8b500, #b37700);
+      color: #fff8e1;
+      box-shadow:
+        inset 0 6px 14px #ffd54f,
+        0 10px 38px #b27a00;
+      text-shadow: 0 0 7px #f9c851;
+      width: 180px;
+    }
+
+    .crypto-submenu .btc:hover {
+      background: linear-gradient(145deg, #fcd200, #ca9700);
+      box-shadow:
+        0 22px 48px #f9d24c,
+        inset 0 8px 20px #fff67a;
+      color: #fff;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    .crypto-submenu .usdt {
+      background: linear-gradient(145deg, #2db07d, #1c6e4a);
+      color: #ccebd1;
+      box-shadow:
+        inset 0 6px 14px #69cba1,
+        0 10px 38px #1a6744;
+      text-shadow: 0 0 7px #a7d5b9;
+      width: 180px;
+    }
+
+    .crypto-submenu .usdt:hover {
+      background: linear-gradient(145deg, #36c895, #238b5a);
+      box-shadow:
+        0 22px 48px #3bd19a,
+        inset 0 8px 20px #b1f1cc;
+      color: #e0fff2;
+      text-shadow: 0 0 10px #d9ffe6;
+    }
+
+    .crypto-submenu .eth {
+      background: linear-gradient(145deg, #8c8c8c, #4a4a4a);
+      color: #dcdcdc;
+      box-shadow:
+        inset 0 6px 14px #afafaf,
+        0 10px 38px #484848;
+      text-shadow: 0 0 7px #bfbfbf;
+      width: 180px;
+    }
+
+    .crypto-submenu .eth:hover {
+      background: linear-gradient(145deg, #b4b4b4, #626262);
+      box-shadow:
+        0 22px 48px #bbbbbb,
+        inset 0 8px 20px #f0f0f0;
+      color: #f5f5f5;
+      text-shadow: 0 0 12px #fff;
+    }
+
+    /* BACK BUTTON - moved and spaced */
+    .crypto-submenu .back-button {
+      background: var(--btn-back-bg);
+      color: white;
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.8),
+        inset 0 5px 10px rgba(255,255,255,0.15);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+      margin-top: 30px;
+      padding: 16px 40px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 40px;
       cursor: pointer;
-      z-index: 1100;
+      user-select: none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      width: 180px;
     }
 
-    #crypto-address-bar {
+    .crypto-submenu .back-button:hover {
+      background-color: var(--btn-back-hover-bg);
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.9),
+        inset 0 8px 12px rgba(255,255,255,0.25);
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    /* FULL PAGE PAYMENT VIEW */
+    #payment-page {
+      position: absolute;
+      inset: 0;
+      background: var(--container-bg);
+      border-radius: 20px;
+      padding: 40px 40px 50px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.55);
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin-top: 20px;
+      justify-content: center;
+      user-select: none;
+      z-index: 100;
+      max-width: 600px;
+      margin: auto;
+      left: 0; right: 0; top: 80px; bottom: 20px;
     }
 
+    #payment-page.visible {
+      display: flex;
+    }
+
+    #payment-page h2 {
+      font-size: 32px;
+      margin-bottom: 35px;
+      color: var(--text);
+      user-select: text;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-shadow:
+        0 0 12px rgba(0,0,0,0.4);
+    }
+
+    /* Bigger QR code for payment page */
+    #qr-image {
+      max-width: 360px;
+      max-height: 360px;
+      border-radius: 24px;
+      box-shadow:
+        0 0 40px rgba(255,255,255,0.5),
+        inset 0 0 30px rgba(255,255,255,0.15);
+      margin-bottom: 40px;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    /* CRYPTO INFO BOX */
     #crypto-info-box {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 22px 30px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 5px;
-    }
-
-    #payment-address {
-      padding: 10px 15px;
-      width: 100%;
-      max-width: 400px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      background: #eee;
+      gap: 15px;
+      max-width: 480px;
+      margin-bottom: 40px;
+      user-select: text;
+      color: var(--text);
+      box-shadow: 0 0 30px rgba(255,255,255,0.1);
       text-align: center;
     }
 
-    #crypto-address-bar button {
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: bold;
-      background: #4caf50;
-      color: white;
+    #network-name {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      user-select: text;
+    }
+
+    #payment-address {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      user-select: text;
+      padding: 14px 18px;
+      border-radius: 14px;
+      box-shadow:
+        inset 0 0 10px rgba(0,0,0,0.5);
+      user-select: all;
+      text-align: center;
+      transition: box-shadow 0.3s ease;
+    }
+
+    #payment-address:focus {
+      outline: none;
+      box-shadow:
+        0 0 18px #66aaff;
+      border-color: #66aaff;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* COPY BUTTON */
+    #copy-btn {
+      padding: 16px 56px;
+      font-weight: 700;
+      font-size: 22px;
+      border-radius: 40px;
       border: none;
       cursor: pointer;
+      background: #0099ff;
+      color: white;
+      box-shadow:
+        0 16px 48px rgba(0, 153, 255, 0.85);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      margin-bottom: 50px;
+      user-select: none;
+      filter: saturate(1.4);
     }
 
-    .loader-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+    #copy-btn:hover {
+      background-color: #007acc;
+      box-shadow:
+        0 20px 56px rgba(0, 122, 204, 0.95);
     }
 
-    .loader-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
+    /* BACK BUTTON ON PAYMENT PAGE */
+    #payment-page .back-button {
+      background: var(--btn-back-bg);
+      color: white;
+      box-shadow:
+        0 14px 38px rgba(0,0,0,0.85),
+        inset 0 8px 18px rgba(255,255,255,0.25);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+      padding: 18px 56px;
+      font-size: 22px;
+      font-weight: 700;
+      border-radius: 52px;
+      cursor: pointer;
+      user-select: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      width: fit-content;
+      margin: 0 auto;
     }
 
-    .pb-loader {
-      font-weight: 900;
-      font-size: 64px;
-      color: #ffd700;
-      letter-spacing: 12px;
-      font-family: 'Poppins', sans-serif;
-      text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
-      animation: glowPulse 2.5s ease-in-out infinite, floatUpDown 3s ease-in-out infinite;
+    #payment-page .back-button:hover {
+      background-color: var(--btn-back-hover-bg);
+      box-shadow:
+        0 18px 52px rgba(0,0,0,0.95),
+        inset 0 12px 24px rgba(255,255,255,0.4);
+      transform: translateY(-4px) scale(1.07);
     }
 
-    @keyframes glowPulse {
-      0%, 100% { color: #ffd700; }
-      50% { color: #fffacd; }
-    }
-
-    @keyframes floatUpDown {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
-
-    .footer {
-      margin-top: 30px;
-      font-size: 14px;
-      color: var(--text);
-    }
-
+    /* TOAST NOTIFICATION */
     #toast {
       position: fixed;
       bottom: 30px;
-      right: 30px;
-      background: #4caf50;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00bbff;
       color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.25);
+      padding: 16px 40px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 18px;
       opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.4s ease;
-      z-index: 2000;
+      pointer-events: none;
+      user-select: none;
+      box-shadow: 0 0 15px #00bbff;
+      transition: opacity 0.4s ease;
+      z-index: 9999;
+      filter: drop-shadow(0 0 6px #00bbff);
     }
 
     #toast.show {
       opacity: 1;
-      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* COPYRIGHT TEXT bottom right */
+    .footer-copyright {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      font-size: 14px;
+      color: #aaa;
+      user-select: none;
+      font-weight: 600;
+      text-shadow: 0 0 3px rgba(0,0,0,0.2);
+      pointer-events: none;
+      z-index: 1002;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Animations */
+    @keyframes barGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    @keyframes neonPulse {
+      0% {
+        filter: drop-shadow(0 0 8px #ff0057);
+      }
+      50% {
+        filter: drop-shadow(0 0 20px #ff3399);
+      }
+      100% {
+        filter: drop-shadow(0 0 8px #ff0057);
+      }
     }
   </style>
 </head>
 <body class="dark">
-  <button id="theme-toggle">Switch to Light</button>
-
-  <div class="loader-overlay" id="page-loader">
-    <div class="pb-loader">BAZAR PAY</div>
+  <!-- LOADER -->
+  <div class="loader-overlay" id="page-loader" aria-label="Loading" style="display:none;">
+    <div class="pb-loader" aria-live="polite" aria-atomic="true">PAYMENT BAZAR</div>
   </div>
 
-  <div class="billipage-container" id="main-container">
-    <h1>PAYMENT BAZAR</h1>
+  <!-- TOP BAR WARNING + THEME TOGGLE -->
+  <div class="top-panel" role="region" aria-live="polite" aria-atomic="true" aria-label="Announcement and theme toggle">
+    <div class="announcement-text" aria-label="Important announcement">
+      <span>⚠️ Warning: Payments are processed shortly. Verify details carefully! ⚠️</span>
+    </div>
+    <button id="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle theme" data-tooltip="Switch to Super Dark">
+      <div class="toggle-knob"></div>
+    </button>
+  </div>
 
-    <div class="pay-buttons" id="main-buttons">
+  <main id="main-container" class="billipage-container" role="main" aria-live="polite" aria-atomic="true" aria-relevant="additions removals">
+    <h1 id="main-title" aria-hidden="true">PAYMENT BAZAR</h1>
+
+    <div class="pay-buttons" id="main-buttons" role="group" aria-label="Payment options">
       <button class="pay-button bkash" onclick="handleButtonClick('bkash', 'bKash')">Pay with bKash</button>
       <button class="pay-button nagad" onclick="handleButtonClick('nagad', 'Nagad')">Pay with Nagad</button>
       <button class="pay-button upi" onclick="handleButtonClick('upi', 'UPI')">Pay with UPI</button>
       <button class="pay-button crypto" onclick="showCryptoSubmenu()">Pay with Crypto</button>
     </div>
 
-    <div class="crypto-submenu" id="crypto-submenu" style="display:none;">
+    <div class="crypto-submenu" id="crypto-submenu" style="display:none;" role="group" aria-label="Crypto payment options">
       <button class="pay-button ltc" onclick="handleButtonClick('ltc', 'LTC')">LTC</button>
       <button class="pay-button btc" onclick="handleButtonClick('btc', 'BTC')">BTC</button>
       <button class="pay-button usdt" onclick="handleButtonClick('usdt', 'USDT')">USDT</button>
       <button class="pay-button eth" onclick="handleButtonClick('eth', 'ETH')">ETH</button>
-      <button class="pay-button back-button" onclick="backToMain()">← Back</button>
+      <button class="back-button" onclick="backToMain()">← Back</button>
     </div>
 
-    <div class="qr-section" id="qr-section" style="display:none;">
-      <img id="qr-image" src="" alt="Payment QR" />
-    </div>
+    <!-- FULL PAGE PAYMENT DISPLAY -->
+    <div id="payment-page" role="region" aria-live="polite" aria-atomic="true" aria-label="Payment details">
+      <h2 id="payment-title">Payment</h2>
 
-    <div class="qr-section" id="crypto-address-bar">
-      <div id="crypto-info-box">
+      <img id="qr-image" src="" alt="Payment QR Code" style="display:none;" />
+
+      <div id="crypto-info-box" style="display:none;">
         <strong id="network-name"></strong>
-        <input id="payment-address" type="text" readonly />
+        <input id="payment-address" type="text" readonly aria-label="Payment Address" />
       </div>
-      <button onclick="copyAddress()">Copy</button>
-    </div>
 
-    <div class="footer">&copy; 2025 Payment Bazar. All rights reserved.</div>
+      <button id="copy-btn" onclick="copyAddress()" style="display:none;" aria-label="Copy payment address">Copy</button>
+
+      <button class="back-button" onclick="backToMain()" aria-label="Back to payment options">Back</button>
+    </div>
+  </main>
+
+  <!-- COPYRIGHT TEXT -->
+  <div class="footer-copyright" aria-hidden="true">
+    © 2025 All Rights Reserved By TeamBazar
   </div>
 
-  <div id="toast">✅ Message</div>
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
   <script>
     const loader = document.getElementById('page-loader');
     const mainContainer = document.getElementById('main-container');
     const mainButtons = document.getElementById('main-buttons');
     const cryptoSubmenu = document.getElementById('crypto-submenu');
-    const qrSection = document.getElementById('qr-section');
+    const paymentPage = document.getElementById('payment-page');
     const qrImage = document.getElementById('qr-image');
-    const cryptoAddressBar = document.getElementById('crypto-address-bar');
+    const cryptoInfoBox = document.getElementById('crypto-info-box');
     const paymentAddress = document.getElementById('payment-address');
     const networkName = document.getElementById('network-name');
-    const themeToggleBtn = document.getElementById('theme-toggle');
+    const copyBtn = document.getElementById('copy-btn');
+    const paymentTitle = document.getElementById('payment-title');
     const toast = document.getElementById('toast');
     const body = document.body;
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const mainTitle = document.getElementById('main-title');
 
     const qrSources = {
       bkash: 'https://shorturl.at/Uustd',
-      nagad: '01814529392',
+      nagad: '',
       upi: 'https://shorturl.at/aiRHR'
     };
 
@@ -313,34 +717,59 @@
       eth: { address: '0xbc808611DFD9D133A38BeA91E394c3C87b9381e3', network: 'Ethereum Network' }
     };
 
-    window.onload = () => {
-      setTimeout(() => {
-        loader.classList.add('hidden');
-        mainContainer.classList.add('visible');
-      }, 2000);
-    };
+    window.addEventListener('load', () => {
+      // loader.classList.add('hidden');
+      // setTimeout(() => {
+      //   mainContainer.classList.add('visible');
+      // }, 400);
+      // For simplicity hiding loader by default here.
+      mainContainer.classList.add('visible');
+    });
 
+    // Toast show function with fade in/out
+    let toastTimeout;
     function showToast(message) {
+      clearTimeout(toastTimeout);
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2600);
     }
 
     function handleButtonClick(type, label) {
       showToast(`✅ ${label} selected`);
+
+      // Hide main buttons and submenu
+      mainButtons.style.display = 'none';
+      cryptoSubmenu.style.display = 'none';
+
+      // Show payment page view
+      paymentPage.classList.add('visible');
+      paymentTitle.textContent = `Pay with ${label}`;
+
+      // Hide main title when payment page is visible
+      mainTitle.style.display = 'none';
+
       if (cryptoAddresses[type]) {
-        cryptoAddressBar.style.display = 'flex';
-        qrSection.style.display = 'none';
+        qrImage.style.display = 'none';
+        cryptoInfoBox.style.display = 'flex';
+        copyBtn.style.display = 'inline-block';
+
         paymentAddress.value = cryptoAddresses[type].address;
         networkName.textContent = `Network: ${cryptoAddresses[type].network}`;
       } else {
-        cryptoAddressBar.style.display = 'none';
-        qrSection.style.display = 'block';
+        cryptoInfoBox.style.display = 'none';
+        copyBtn.style.display = 'none';
+
+        qrImage.style.display = 'block';
         qrImage.src = qrSources[type] || '';
+        qrImage.alt = `${label} QR Code`;
       }
     }
 
     function copyAddress() {
+      if (!paymentAddress.value) return;
       navigator.clipboard.writeText(paymentAddress.value).then(() => {
         showToast("✅ Address copied!");
       });
@@ -349,26 +778,45 @@
     function showCryptoSubmenu() {
       mainButtons.style.display = 'none';
       cryptoSubmenu.style.display = 'flex';
-      qrSection.style.display = 'none';
-      cryptoAddressBar.style.display = 'none';
     }
 
     function backToMain() {
+      paymentPage.classList.remove('visible');
       cryptoSubmenu.style.display = 'none';
       mainButtons.style.display = 'flex';
-      qrSection.style.display = 'none';
-      cryptoAddressBar.style.display = 'none';
+
+      // Show main title again
+      mainTitle.style.display = 'block';
+    }
+
+    // THEME TOGGLE FUNCTIONALITY
+    function updateToggleTooltip() {
+      if(body.classList.contains('dark')) {
+        themeToggleBtn.setAttribute('data-tooltip', 'Switch to Super Dark');
+        themeToggleBtn.setAttribute('aria-checked', 'false');
+      } else {
+        themeToggleBtn.setAttribute('data-tooltip', 'Switch to Dark');
+        themeToggleBtn.setAttribute('aria-checked', 'true');
+      }
     }
 
     themeToggleBtn.addEventListener('click', () => {
       if (body.classList.contains('dark')) {
-        body.classList.replace('dark', 'light');
-        themeToggleBtn.textContent = 'Switch to Dark';
+        body.classList.replace('dark', 'superdark');
       } else {
-        body.classList.replace('light', 'dark');
-        themeToggleBtn.textContent = 'Switch to Light';
+        body.classList.replace('superdark', 'dark');
+      }
+      updateToggleTooltip();
+    });
+
+    themeToggleBtn.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        themeToggleBtn.click();
       }
     });
+
+    updateToggleTooltip();
   </script>
 </body>
 </html>
