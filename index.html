@@ -904,6 +904,414 @@
   <div class="footer-copyright" aria-hidden="true">
     © 2025 All Rights Reserved By TeamBazar
   </div>
+  <!-- 🌐 Support Widget System -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+<div id="support-system">
+  <!-- ✅ Modern Copy Toast -->
+  <div id="copy-toast">
+    <span>✅ Copied to clipboard</span>
+  </div>
+
+  <!-- 📞 Buttons -->
+  <div id="support-buttons">
+    <button class="support-btn whatsapp" onclick="handleOpen('whatsapp-widget')">
+      <img src="https://img.icons8.com/ios-filled/24/ffffff/whatsapp.png" /> WhatsApp
+    </button>
+    <button class="support-btn telegram" onclick="handleOpen('telegram-widget')">
+      <img src="https://img.icons8.com/ios-filled/24/ffffff/telegram-app.png" /> Telegram
+    </button>
+    <button class="support-btn live" onclick="handleOpen('live-widget')">
+      <img src="https://img.icons8.com/ios-filled/24/ffffff/chat--v1.png" /> Live Chat
+    </button>
+    <button class="support-btn discord" onclick="handleOpen('discord-widget')">
+      <img src="https://img.icons8.com/ios-filled/24/ffffff/discord-logo.png" /> Discord
+    </button>
+  </div>
+
+  <!-- 🧩 Popups -->
+  <div class="widget" id="whatsapp-widget">
+    <div class="widget-header whatsapp">
+      <span>📱 WhatsApp Support</span>
+      <div class="controls">
+        <span class="minimize" onclick="minimizeWidget('whatsapp-widget')">🗕</span>
+        <span onclick="closeWidget('whatsapp-widget')">✖</span>
+      </div>
+    </div>
+    <div class="widget-body">
+      <p>Number: <span id="wa-number">+8801814529392</span></p>
+      <div class="qr-wrapper">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://wa.me/880123456789" alt="QR Code" />
+      </div>
+      <button onclick="copyText('wa-number')">📋 Copy</button>
+    </div>
+  </div>
+
+  <div class="widget" id="telegram-widget">
+    <div class="widget-header telegram">
+      <span>📨 Telegram</span>
+      <div class="controls">
+        <span class="minimize" onclick="minimizeWidget('telegram-widget')">🗕</span>
+        <span onclick="closeWidget('telegram-widget')">✖</span>
+      </div>
+    </div>
+    <div class="widget-body">
+      <p>Join: <span id="telegram-link">@moneybazar</span></p>
+      <div class="qr-wrapper">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://t.me/YourTelegramHandle" alt="QR Code" />
+      </div>
+      <button onclick="copyText('telegram-link')">📋 Copy</button>
+    </div>
+  </div>
+
+  <div class="widget" id="live-widget">
+    <div class="widget-header live">
+      <span>💬 Live Chat</span>
+      <div class="controls">
+        <span class="minimize" onclick="minimizeWidget('live-widget')">🗕</span>
+        <span onclick="closeWidget('live-widget')">✖</span>
+      </div>
+    </div>
+    <div class="widget-body">
+      <p>Email: <span id="live-email">support@moneybazar.com</span></p>
+      <div class="qr-wrapper">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=mailto:support@example.com" alt="QR Code" />
+      </div>
+      <button onclick="copyText('live-email')">📋 Copy</button>
+    </div>
+  </div>
+
+  <div class="widget" id="discord-widget">
+    <div class="widget-header discord">
+      <span>🎮 Discord Server</span>
+      <div class="controls">
+        <span class="minimize" onclick="minimizeWidget('discord-widget')">🗕</span>
+        <span onclick="closeWidget('discord-widget')">✖</span>
+      </div>
+    </div>
+    <div class="widget-body">
+      <p>Link: <span id="discord-link">https://discord.gg/moneybazar</span></p>
+      <div class="qr-wrapper">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://discord.gg/yourlink" alt="QR Code" />
+      </div>
+      <button onclick="copyText('discord-link')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- 🔊 Sounds -->
+  <audio id="sound-open" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-interface-click-1126.mp3"></audio>
+  <audio id="sound-copy" preload="auto" src="https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2861.mp3"></audio>
+</div>
+
+<!-- 🎨 Updated Modern Styles -->
+<style>
+  #support-system {
+    all: initial;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #support-system * {
+    box-sizing: border-box;
+  }
+
+  #support-buttons {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 10000;
+  }
+
+  .support-btn {
+    padding: 12px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    border-radius: 0 12px 12px 0;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  }
+
+  .support-btn:hover {
+    transform: scale(1.08);
+  }
+
+  .whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+  .telegram { background: linear-gradient(135deg, #29b6f6, #0288d1); }
+  .live     { background: linear-gradient(135deg, #FF416C, #FF4B2B); }
+  .discord  { background: linear-gradient(135deg, #7289DA, #5865F2); }
+
+  .widget {
+    position: fixed;
+    display: none;
+    width: 320px;
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+    backdrop-filter: blur(14px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.4s ease;
+    z-index: 10001;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .widget-header {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 14px 14px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .controls span {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 16px;
+  }
+
+  .widget-body {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .qr-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    transition: transform 0.3s ease;
+  }
+
+  .qr-wrapper img {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .qr-wrapper:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+    border-color: rgba(0, 255, 255, 0.6);
+  }
+
+  .widget-body button {
+    padding: 8px 16px;
+    font-size: 13px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .widget-body button:hover {
+    transform: scale(1.05);
+  }
+
+  #copy-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1abc9c;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 10002;
+  }
+
+  #copy-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<!-- ⚙️ Script -->
+<script>
+  const $ = id => document.getElementById(id);
+
+  function handleOpen(id) {
+    document.querySelectorAll(".widget").forEach(w => {
+      if (w.id !== id) w.style.display = "none";
+    });
+    openWidget(id);
+  }
+
+  function openWidget(id) {
+    try { $('sound-open').play(); } catch {}
+    const el = $(id);
+    el.style.display = 'block';
+    el.style.top = '100px';
+    el.style.left = '100px';
+    dragElement(el, id);
+  }
+
+  function closeWidget(id) {
+    $(id).style.display = 'none';
+  }
+
+  function minimizeWidget(id) {
+    const body = document.querySelector(`#${id} .widget-body`);
+    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function copyText(id) {
+    const text = $(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      try { $('sound-copy').play(); } catch {}
+      const toast = $('copy-toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  function dragElement(elmnt) {
+    const header = elmnt.querySelector(".widget-header");
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    header.onmousedown = function(e) {
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+    };
+
+    function elementDrag(e) {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
+</script>
+<!-- 🌐 Agent Status Panel -->
+<div id="agent-status">
+  <div class="agent-title">💼 Live Agent Status</div>
+
+  <div class="agent-box upi online">
+    <div class="agent-label">UPI Agent</div>
+    <div class="status">🟢 Online</div>
+  </div>
+
+  <div class="agent-box bkash offline">
+    <div class="agent-label">Bkash Agent</div>
+    <div class="status">🔴 Offline</div>
+  </div>
+
+  <div class="agent-box nagad online">
+    <div class="agent-label">Nagad Agent</div>
+    <div class="status">🟢 Online</div>
+  </div>
+
+  <div class="agent-box crypto offline">
+    <div class="agent-label">Crypto Agent</div>
+    <div class="status">🔴 Offline</div>
+  </div>
+</div>
+
+<!-- 🌈 Style -->
+<style>
+  body {
+    margin: 0;
+    background-color: #121212;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+  }
+
+  #agent-status {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background: #1e1e1e;
+    padding: 20px 25px;
+    border-radius: 16px 0 0 16px;
+    box-shadow: -8px 8px 20px rgba(0,0,0,0.6);
+    width: 300px;
+    color: #ddd;
+    user-select: none;
+  }
+
+  .agent-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: #fff;
+  }
+
+  .agent-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    transition: background-color 0.3s ease;
+    background-color: #2a2a2a;
+  }
+
+  .agent-box.online {
+    border-left: 5px solid #34d058;
+    color: #a5f3a1;
+  }
+
+  .agent-box.offline {
+    border-left: 5px solid #ff4d4f;
+    color: #fca5a5;
+  }
+
+  .agent-label {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .status {
+    font-weight: 700;
+    font-size: 14px;
+  }
+</style>
+
+
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
